@@ -44,6 +44,18 @@ def run_ikos_report(ikos_db_path):
     if rc.returncode != 0:
         pass
 
+def process_marker_file(marker_file):
+    with marker_file.open() as jsonf:
+        data = json.load(jsonf)
+        bc_path = data['bc']
+        ikos_db_path = data['exe'] + IKOS_DB_FILE_EXT
+        if run_ikos(bc_path, ikos_db_path):
+            run_ikos_report(ikos_db_path)
+            return ikos_db_path
+        else:
+            print('Cannot generate report for ' + bc_path + ' due to analysis failure.')
+
+
 def main(argv=sys.argv[1:]) -> int:
     parser = argparse.ArgumentParser(
         description='Perform ikos analysis on files compiled with ikos-scan-cc / ikos-scan-c++.',
@@ -61,13 +73,10 @@ def main(argv=sys.argv[1:]) -> int:
         return 0
 
     for m in marker_files:
-        with m.open() as jsonf:
-            data = json.load(jsonf)
-            bc_path = data['bc']
-            ikos_db_path = data['exe'] + IKOS_DB_FILE_EXT
-            run_ikos(bc_path, ikos_db_path)
-            run_ikos_report(ikos_db_path)
-            ikos_db_files.append(ikos_db_path)
+        result = process_marker_file(m)
+        if result:
+            ikos_db_files.append(result)
+
 
 if __name__ == '__main__':
     sys.exit(main())
