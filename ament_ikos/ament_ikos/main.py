@@ -15,7 +15,14 @@ IKOS_DB_FILE_EXT = '.ikosdb'
 
 def scan_marker_files(directory: str) -> List[pathlib.Path]:
     """ Return a list of marker files in the current directory. """
-    return sorted(pathlib.Path(directory).glob('**/*' + IKOS_MARKER_FILE_EXT))
+    def remove_cmake_compiler_test_files(path: pathlib.Path) -> bool:
+        if '/CMakeFiles/' in str(path):
+            return False
+        else:
+            return True
+
+    return filter(remove_cmake_compiler_test_files,
+            sorted(pathlib.Path(directory).glob('**/*' + IKOS_MARKER_FILE_EXT)))
 
 
 def run_ikos(bitcode_path, ikos_db_path):
