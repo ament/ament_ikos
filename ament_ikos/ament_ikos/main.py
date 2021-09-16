@@ -27,9 +27,15 @@ def scan_marker_files(directory: str) -> List[pathlib.Path]:
 
 def run_ikos(bitcode_path, ikos_db_path):
     cmd = ['ikos', bitcode_path, '-o', ikos_db_path]
-    rc = subprocess.run(cmd)
+    rc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     if rc.returncode != 0:
-        pass
+        print(
+            'ikos analysis error: "' + ' '.join(cmd) +
+            '" exited with return code ' + str(rc.returncode))
+        print(rc.stdout)
+        return False
+    print(rc.stdout)
+    return True
 
 
 def run_ikos_report(ikos_db_path):
