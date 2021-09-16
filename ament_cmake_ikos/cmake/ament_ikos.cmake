@@ -11,6 +11,7 @@ function(ament_ikos)
 
   set(result_file "${AMENT_TEST_RESULTS_DIR}/${PROJECT_NAME}/${ARG_TESTNAME}.xunit.xml")
   set(cmd "${ament_ikos_BIN}")
+  list(APPEND cmd ${ARG_UNPARSED_ARGUMENTS})
 
   file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ament_ikos")
   ament_add_test(

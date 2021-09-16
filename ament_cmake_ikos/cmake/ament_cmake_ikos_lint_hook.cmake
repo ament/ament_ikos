@@ -10,5 +10,5 @@ file(GLOB_RECURSE _source_files FOLLOW_SYMLINKS
 )
 if(_source_files)
   message(STATUS "Added test 'ikos' to analyize C / C++ executables ")
-  ament_ikos()
+  ament_ikos("${CMAKE_CURRENT_BINARY_DIR}")
 endif()
