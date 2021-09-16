@@ -27,13 +27,16 @@ def scan_marker_files(directory: str) -> List[pathlib.Path]:
 
 def run_ikos(bitcode_path, ikos_db_path):
     cmd = ['ikos', bitcode_path, '-o', ikos_db_path]
-    subprocess.check_call(cmd)
+    rc = subprocess.run(cmd)
+    if rc.returncode != 0:
+        pass
 
 
 def run_ikos_report(ikos_db_path):
     cmd = ['ikos-report', ikos_db_path]
-    subprocess.check_call(cmd)
-
+    rc = subprocess.run(cmd)
+    if rc.returncode != 0:
+        pass
 
 def main(argv=sys.argv[1:]) -> int:
     parser = argparse.ArgumentParser(
