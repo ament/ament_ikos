@@ -9,8 +9,10 @@ function(ament_ikos)
     message(FATAL_ERROR "ament_ikos() variable 'ament_ikos_BIN' must not be empty")
   endif()
 
-  set(result_file "${AMENT_TEST_RESULTS_DIR}/${PROJECT_NAME}/${ARG_TESTNAME}.xunit.xml")
-  set(cmd "${ament_ikos_BIN}")
+  set(junit_file "${AMENT_TEST_RESULTS_DIR}/${PROJECT_NAME}/${ARG_TESTNAME}.xunit.xml")
+  set(sarif_file "${AMENT_TEST_RESULTS_DIR}/${PROJECT_NAME}/${ARG_TESTNAME}.sarif")
+
+  set(cmd "${ament_ikos_BIN}" "--xunit-file" "${junit_file}" "--sarif-file" "${sarif_file}")
   list(APPEND cmd ${ARG_UNPARSED_ARGUMENTS})
 
   file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/ament_ikos")
@@ -18,7 +20,7 @@ function(ament_ikos)
     "${ARG_TESTNAME}"
     COMMAND ${cmd}
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/ament_ikos/${ARG_TESTNAME}.txt"
-    RESULT_FILE "${result_file}"
+    RESULT_FILE "${junit_file}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
   )
   set_tests_properties(
@@ -27,3 +29,4 @@ function(ament_ikos)
     LABELS "ikos;linter"
   )
 endfunction()
+
