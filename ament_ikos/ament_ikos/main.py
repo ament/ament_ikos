@@ -200,7 +200,7 @@ def main(argv=sys.argv[1:]) -> int:
     test_name = f'{os.path.basename(args.directory)}.ikos'
     if args.xunit_file:
         aggregate_junit_xml_files(ikos_db_files, args.xunit_file, test_name)
-    if args.xunit_file:
+    if args.sarif_file:
         aggregate_sarif_files(ikos_db_files, args.sarif_file, test_name)
 
     return 0
