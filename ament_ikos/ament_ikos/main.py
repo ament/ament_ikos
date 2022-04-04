@@ -161,9 +161,36 @@ def aggregate_junit_xml_files(ikos_db_filenames, summary_filename, summary_name)
 
 
 def aggregate_sarif_files(ikos_db_filenames, summary_filename, summary_name):
-    """Aggregate the SARIF files for each test into a single ikos.sarif file."""
-    # TODO(mjeronimo): Write a function to aggregate the SARIF files
-    pass
+    """Aggregate the SARIF files for each test into a single output SARIF file."""
+    first = True
+    output_dict = {}
+
+    for db_filename in ikos_db_filenames:
+        # Generate the input SARIF filename from the IKOS db name
+        sarif_filename = os.path.splitext(db_filename)[0] + '.sarif'
+
+        # Process the file
+        with open(sarif_filename) as input_file:
+            data = json.load(input_file)
+            # Grab the version and schema information from the first file
+            if first:
+                output_dict['version'] = data['version']
+                output_dict['$schema'] = data['$schema']
+                output_dict['runs'] = []
+                first = False
+            else:
+                assert output_dict['version'] == data['version'], \
+                    f"SARIF version mismatch in input files: {output_dict['version']} vs. {data['version']}"
+                assert output_dict['$schema'] != data['$schema'], \
+                    f"SARIF schema mismatch in input files: {output_dict['$schema']} vs. {data['$schema']}"
+
+            # Integrate the 'runs' data from each separate IKOS scan
+            for run in data['runs']:
+                output_dict['runs'].append(run)
+
+    # Dump the output dictionary as a single SARIF (json) file
+    with open(summary_filename, 'w') as outfile:
+        json.dump(output_dict, outfile, indent=2)
 
 
 def main(argv=sys.argv[1:]) -> int:
