@@ -181,7 +181,7 @@ def aggregate_sarif_files(ikos_db_filenames, summary_filename, summary_name):
             else:
                 assert output_dict['version'] == data['version'], \
                     f"SARIF version mismatch in input files: {output_dict['version']} vs. {data['version']}"
-                assert output_dict['$schema'] != data['$schema'], \
+                assert output_dict['$schema'] == data['$schema'], \
                     f"SARIF schema mismatch in input files: {output_dict['$schema']} vs. {data['$schema']}"
 
             # Integrate the 'runs' data from each separate IKOS scan
