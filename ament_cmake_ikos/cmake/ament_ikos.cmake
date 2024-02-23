@@ -19,6 +19,7 @@ function(ament_ikos)
   ament_add_test(
     "${ARG_TESTNAME}"
     COMMAND ${cmd}
+    TIMEOUT 1800
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/ament_ikos/${ARG_TESTNAME}.txt"
     RESULT_FILE "${junit_file}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
